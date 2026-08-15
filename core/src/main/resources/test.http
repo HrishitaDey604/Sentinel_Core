@@ -1,0 +1,11 @@
+POST http://localhost:8080/api/assets
+Content-Type: application/json
+
+{
+  "assetName": "Firewall-01",
+  "assetType": "Network Device",
+  "ipAddress": "10.0.0.1",
+  "status": "Active",
+  "owner": "IT Team",
+  "createDate": "2026-08-04T00:00:00"
+}

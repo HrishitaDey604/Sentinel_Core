@@ -1,0 +1,16 @@
+# Java / Maven
+core/target/
+core/.mvn/
+*.class
+
+# IDE
+.idea/
+*.iml
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
