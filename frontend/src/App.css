@@ -1,126 +1,158 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500&display=swap');
-
-/* Reset default spacing */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background-color: #0f172a;   /* dark navy background */
-  color: #e2e8f0;              /* light gray text */
-  font-family: 'Inter', sans-serif;
-}
-
-/* ---------- Header ---------- */
-
-.header {
-  padding: 2rem;
-  border-bottom: 1px solid #1e293b;
-  text-align: center;
-}
-
-.header h1 {
-  font-family: 'Poppins', sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #38bdf8;   /* accent blue */
-}
-
-/* ---------- Page Layout ---------- */
-
-.dashboard-body {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;   /* center the content */
-}
-
-.section-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 2rem 0 1rem;
-  color: #94a3b8;
-}
-
-/* ---------- KPI Cards ---------- */
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-}
-
-.kpi-card {
-  background-color: #1e293b;   /* card background */
-  border-radius: 10px;
-  padding: 1.2rem;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.kpi-card h3 {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #94a3b8;
-  margin-bottom: 0.5rem;
-}
-
-.kpi-card p {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #f1f5f9;
-}
-
-/* Different accent colors for status cards */
-.kpi-card.online p  { color: #22c55e; }
-.kpi-card.warning p { color: #eab308; }
-.kpi-card.critical p{ color: #ef4444; }
-
-/* ---------- Asset Table ---------- */
-
-.table-container {
-  background-color: #1e293b;
-  border-radius: 10px;
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0b1220;
+  position: relative;
   overflow: hidden;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+/* Large subtle curved shape */
+.login-page::before {
+  content: "";
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  left: -300px;
+  top: -100px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.45);
+  border-right: 1px solid rgba(71, 85, 105, 0.35);
 }
 
-th, td {
-  padding: 0.9rem 1.2rem;
-  text-align: left;
+/* Subtle dots and geometric lines */
+.login-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+          radial-gradient(
+                  circle,
+                  rgba(148, 163, 184, 0.3) 2px,
+                  transparent 2px
+          ) 0 0 / 28px 28px,
+          linear-gradient(
+                  135deg,
+                  transparent 45%,
+                  rgba(71, 85, 105, 0.18) 46%,
+                  transparent 47%
+          ),
+          linear-gradient(
+                  315deg,
+                  transparent 45%,
+                  rgba(71, 85, 105, 0.15) 46%,
+                  transparent 47%
+          );
+  opacity: 0.35;
+  pointer-events: none;
 }
 
-th {
-  background-color: #0f172a;
-  color: #94a3b8;
+.login-card {
+  background-color: #0b0f0d;
+  padding: 2.5rem;
+  border-radius: 10px;
+  width: 340px;
+  border: 1px solid #10402d;
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.08);
+  display: flex;
+  flex-direction: column;
+
+  /* Keeps card above the background design */
+  position: relative;
+  z-index: 1;
+}
+
+.login-heading {
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  margin-bottom: 0.25rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.login-heading-white {
+  color: #ffffff;
+}
+
+.login-heading-accent {
+  color: #10b981;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.login-label {
   font-size: 0.8rem;
-  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 0.3rem;
+  margin-top: 0.8rem;
 }
 
-td {
-  border-top: 1px solid #334155;
+.login-input {
+  padding: 0.65rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #1f2e27;
+  background-color: #000000;
+  color: #ffffff;
   font-size: 0.9rem;
 }
 
-tr:hover td {
-  background-color: #273449;
+.login-input::placeholder {
+  color: #4b7a63;
+  letter-spacing: 0.04em;
+  font-size: 0.78rem;
 }
 
-/* ---------- Status Badge ---------- */
-
-.status {
-  padding: 0.25rem 0.7rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
+.login-input:focus {
+  outline: none;
+  border-color: #10b981;
 }
 
-.status.online   { background-color: rgba(34, 197, 94, 0.15); color: #22c55e; }
-.status.warning  { background-color: rgba(234, 179, 8, 0.15); color: #eab308; }
-.status.critical { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.login-remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #10b981;
+  cursor: pointer;
+}
+
+.login-button {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #10b981;
+  color: #000000;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.login-button:hover {
+  background-color: #0ea371;
+}
+
+.login-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}

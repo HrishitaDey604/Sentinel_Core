@@ -8,10 +8,10 @@ public class AssetDTO {
     private String assetName;
     private String assetType;
     private String ipAddress;
-    private double cpuUsage;
-    private double memoryUsage;
-    private double diskUsage;
-    private double networkUsage;
+    private Double cpuUsage;
+    private Double memoryUsage;
+    private Double diskUsage;
+    private Double networkUsage;
     private String status;
     private String owner;
     private LocalDateTime createDate;
@@ -19,8 +19,8 @@ public class AssetDTO {
     public AssetDTO() {
     }
 
-    public AssetDTO(Long id, String assetName, String assetType, String ipAddress, double cpuUsage,
-                    double memoryUsage, double diskUsage, double networkUsage, String status,
+    public AssetDTO(Long id, String assetName, String assetType, String ipAddress, Double cpuUsage,
+                    Double memoryUsage, Double diskUsage, Double networkUsage, String status,
                     String owner, LocalDateTime createDate) {
         this.id = id;
         this.assetName = assetName;
@@ -67,35 +67,35 @@ public class AssetDTO {
         this.ipAddress = ipAddress;
     }
 
-    public double getCpuUsage() {
+    public Double getCpuUsage() {
         return cpuUsage;
     }
 
-    public void setCpuUsage(double cpuUsage) {
+    public void setCpuUsage(Double cpuUsage) {
         this.cpuUsage = cpuUsage;
     }
 
-    public double getMemoryUsage() {
+    public Double getMemoryUsage() {
         return memoryUsage;
     }
 
-    public void setMemoryUsage(double memoryUsage) {
+    public void setMemoryUsage(Double memoryUsage) {
         this.memoryUsage = memoryUsage;
     }
 
-    public double getDiskUsage() {
+    public Double getDiskUsage() {
         return diskUsage;
     }
 
-    public void setDiskUsage(double diskUsage) {
+    public void setDiskUsage(Double diskUsage) {
         this.diskUsage = diskUsage;
     }
 
-    public double getNetworkUsage() {
+    public Double getNetworkUsage() {
         return networkUsage;
     }
 
-    public void setNetworkUsage(double networkUsage) {
+    public void setNetworkUsage(Double networkUsage) {
         this.networkUsage = networkUsage;
     }
 
@@ -121,5 +121,41 @@ public class AssetDTO {
 
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
+    }
+
+    // Manual Builder to match AssetService builder syntax
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Long id;
+        private String assetName;
+        private String assetType;
+        private String ipAddress;
+        private Double cpuUsage;
+        private Double memoryUsage;
+        private Double diskUsage;
+        private Double networkUsage;
+        private String status;
+        private String owner;
+        private LocalDateTime createDate;
+
+        public Builder id(Long id) { this.id = id; return this; }
+        public Builder assetName(String assetName) { this.assetName = assetName; return this; }
+        public Builder assetType(String assetType) { this.assetType = assetType; return this; }
+        public Builder ipAddress(String ipAddress) { this.ipAddress = ipAddress; return this; }
+        public Builder cpuUsage(Double cpuUsage) { this.cpuUsage = cpuUsage; return this; }
+        public Builder memoryUsage(Double memoryUsage) { this.memoryUsage = memoryUsage; return this; }
+        public Builder diskUsage(Double diskUsage) { this.diskUsage = diskUsage; return this; }
+        public Builder networkUsage(Double networkUsage) { this.networkUsage = networkUsage; return this; }
+        public Builder status(String status) { this.status = status; return this; }
+        public Builder owner(String owner) { this.owner = owner; return this; }
+        public Builder createDate(LocalDateTime createDate) { this.createDate = createDate; return this; }
+
+        public AssetDTO build() {
+            return new AssetDTO(id, assetName, assetType, ipAddress, cpuUsage,
+                    memoryUsage, diskUsage, networkUsage, status, owner, createDate);
+        }
     }
 }

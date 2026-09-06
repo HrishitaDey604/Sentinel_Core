@@ -15,11 +15,11 @@ public class Alert {
     @JoinColumn(name = "asset_id")
     private Asset asset;
 
-    private String severity;   // LOW, MEDIUM, HIGH, CRITICAL
+    private String severity;
 
     private String message;
 
-    private String status;     // OPEN, RESOLVED
+    private String status;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

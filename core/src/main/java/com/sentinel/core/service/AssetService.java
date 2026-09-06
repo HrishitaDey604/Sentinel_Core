@@ -6,8 +6,10 @@ import com.sentinel.core.entity.Asset;
 import com.sentinel.core.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.sentinel.core.exception.ResourceNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,32 +18,33 @@ public class AssetService {
     @Autowired
     private AssetRepository assetRepository;
 
-    public List<AssetDTO> getAll() {
+    public List<AssetDTO> getAllAssets() {
         return assetRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public AssetDTO getById(Long id) {
+    public AssetDTO getAssetById(Long id) {
         Asset asset = assetRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Asset not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Asset not found with id: " + id));
         return convertToDTO(asset);
     }
 
-    public AssetDTO save(AssetDTO dto) {
-        Asset entity = new Asset(
-                dto.getAssetName(),
-                dto.getAssetType(),
-                dto.getIpAddress(),
-                dto.getCpuUsage(),
-                dto.getMemoryUsage(),
-                dto.getDiskUsage(),
-                dto.getNetworkUsage(),
-                dto.getStatus(),
-                dto.getOwner(),
-                dto.getCreateDate()
-        );
+    public AssetDTO createAsset(AssetDTO dto) {
+        Asset entity = Asset.builder()
+                .assetName(dto.getAssetName())
+                .assetType(dto.getAssetType())
+                .ipAddress(dto.getIpAddress())
+                .cpuUsage(dto.getCpuUsage())
+                .memoryUsage(dto.getMemoryUsage())
+                .diskUsage(dto.getDiskUsage())
+                .networkUsage(dto.getNetworkUsage())
+                .status(dto.getStatus() != null ? Asset.AssetStatus.valueOf(dto.getStatus().toUpperCase()) : Asset.AssetStatus.ONLINE)
+                .owner(dto.getOwner())
+                .createDate(dto.getCreateDate() != null ? dto.getCreateDate() : LocalDateTime.now())
+                .build();
+
         Asset saved = assetRepository.save(entity);
         return convertToDTO(saved);
     }
@@ -57,7 +60,9 @@ public class AssetService {
         existing.setMemoryUsage(dto.getMemoryUsage());
         existing.setDiskUsage(dto.getDiskUsage());
         existing.setNetworkUsage(dto.getNetworkUsage());
-        existing.setStatus(dto.getStatus());
+        if (dto.getStatus() != null) {
+            existing.setStatus(Asset.AssetStatus.valueOf(dto.getStatus().toUpperCase()));
+        }
         existing.setOwner(dto.getOwner());
         existing.setCreateDate(dto.getCreateDate());
 
@@ -76,31 +81,68 @@ public class AssetService {
         List<Asset> assets = assetRepository.findAll();
 
         long total = assets.size();
-        double avgCpu = assets.stream().mapToDouble(Asset::getCpuUsage).average().orElse(0);
-        double avgMemory = assets.stream().mapToDouble(Asset::getMemoryUsage).average().orElse(0);
-        double avgDisk = assets.stream().mapToDouble(Asset::getDiskUsage).average().orElse(0);
-        double avgNetwork = assets.stream().mapToDouble(Asset::getNetworkUsage).average().orElse(0);
+        long online = assets.stream().filter(a -> a.getStatus() == Asset.AssetStatus.ONLINE).count();
+        long offline = assets.stream().filter(a -> a.getStatus() == Asset.AssetStatus.OFFLINE).count();
+        long warning = assets.stream().filter(a -> a.getStatus() == Asset.AssetStatus.WARNING).count();
+        long critical = assets.stream().filter(a -> a.getStatus() == Asset.AssetStatus.CRITICAL).count();
 
-        long online = assets.stream().filter(a -> "ONLINE".equalsIgnoreCase(a.getStatus())).count();
-        long warning = assets.stream().filter(a -> "WARNING".equalsIgnoreCase(a.getStatus())).count();
-        long critical = assets.stream().filter(a -> "CRITICAL".equalsIgnoreCase(a.getStatus())).count();
+        double avgCpu = assets.stream()
+                .map(Asset::getCpuUsage)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(0.0);
 
-        return new DashboardSummaryDTO(total, avgCpu, avgMemory, avgDisk, avgNetwork, online, warning, critical);
+        double avgMemory = assets.stream()
+                .map(Asset::getMemoryUsage)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(0.0);
+
+        double avgDisk = assets.stream()
+                .map(Asset::getDiskUsage)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(0.0);
+
+        double avgNetwork = assets.stream()
+                .map(Asset::getNetworkUsage)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(0.0);
+
+        double uptime = (total == 0) ? 0.0 : ((double) online / total) * 100.0;
+
+        return DashboardSummaryDTO.builder()
+                .totalAssets(total)
+                .uptimePercentage(uptime)
+                .onlineAssets(online)
+                .offlineAssets(offline)
+                .criticalAlerts(critical)
+                .avgCpuUsage(avgCpu)
+                .avgMemoryUsage(avgMemory)
+                .avgDiskUsage(avgDisk)
+                .networkUsage(avgNetwork)
+                .warningCount(warning)
+                .build();
     }
 
     private AssetDTO convertToDTO(Asset entity) {
-        return new AssetDTO(
-                entity.getId(),
-                entity.getAssetName(),
-                entity.getAssetType(),
-                entity.getIpAddress(),
-                entity.getCpuUsage(),
-                entity.getMemoryUsage(),
-                entity.getDiskUsage(),
-                entity.getNetworkUsage(),
-                entity.getStatus(),
-                entity.getOwner(),
-                entity.getCreateDate()
-        );
+        return AssetDTO.builder()
+                .id(entity.getId())
+                .assetName(entity.getAssetName())
+                .assetType(entity.getAssetType())
+                .ipAddress(entity.getIpAddress())
+                .cpuUsage(entity.getCpuUsage())
+                .memoryUsage(entity.getMemoryUsage())
+                .diskUsage(entity.getDiskUsage())
+                .networkUsage(entity.getNetworkUsage())
+                .status(entity.getStatus() != null ? entity.getStatus().name() : null)
+                .owner(entity.getOwner())
+                .createDate(entity.getCreateDate())
+                .build();
     }
 }

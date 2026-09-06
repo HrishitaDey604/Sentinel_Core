@@ -21,6 +21,9 @@ public class AlertService {
     @Autowired
     private AssetRepository assetRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public AlertDTO createAlert(Long assetId, String severity, String message) {
         Asset asset = assetRepository.findById(assetId)
                 .orElseThrow(() -> new RuntimeException("Asset not found: " + assetId));
@@ -32,7 +35,18 @@ public class AlertService {
         alert.setStatus("OPEN");
         alert.setCreatedAt(LocalDateTime.now());
 
-        return toDTO(alertRepository.save(alert));
+        AlertDTO savedAlert = toDTO(alertRepository.save(alert));
+
+        // Send email notification for CRITICAL alerts
+        if ("CRITICAL".equalsIgnoreCase(severity)) {
+            notificationService.sendAlertEmail(
+                    "hrishitadey04@gmail.com",
+                    "Critical Alert: " + asset.getAssetName(),
+                    message
+            );
+        }
+
+        return savedAlert;
     }
 
     public AlertDTO resolveAlert(Long alertId) {

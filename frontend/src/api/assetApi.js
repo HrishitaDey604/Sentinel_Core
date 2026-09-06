@@ -1,15 +1,15 @@
-import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const API_BASE = 'http://localhost:8080/api/assets';
 
-export const getAllAssets = () => axios.get(API_BASE);
+export const getAllAssets = () => axiosInstance.get(API_BASE);
 
-export const getAssetById = (id) => axios.get(`${API_BASE}/${id}`);
+export const getAssetById = (id) => axiosInstance.get(`${API_BASE}/${id}`);
 
-export const createAsset = (asset) => axios.post(API_BASE, asset);
+export const createAsset = (asset) => axiosInstance.post(API_BASE, asset);
 
-export const updateAsset = (id, asset) => axios.put(`${API_BASE}/${id}`, asset);
+export const updateAsset = (id, asset) => axiosInstance.put(`${API_BASE}/${id}`, asset);
 
-export const deleteAsset = (id) => axios.delete(`${API_BASE}/${id}`);
+export const deleteAsset = (id) => axiosInstance.delete(`${API_BASE}/${id}`);
 
-export const getDashboardSummary = () => axios.get(`${API_BASE}/dashboard/summary`);
+export const getDashboardSummary = () => axiosInstance.get(`${API_BASE}/dashboard/summary`);
